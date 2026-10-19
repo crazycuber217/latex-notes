@@ -1,0 +1,614 @@
+\documentclass[12pt]{scrartcl}
+\usepackage[sexy, href, sectionmark, mdthm]{moksh}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{8pt}
+\DeclareMathOperator{\ob}{ob}
+
+
+\makeatletter
+\let\c@exercise\c@theorem
+\makeatother
+% makes exercises the same counter as theorem/everything else.
+
+\newcounter{exercises}[section]
+\renewcommand\theexercises{\thesection.\arabic{exercises}}
+\newenvironment{exercises}[1][]
+{\refstepcounter{exercises}\par\medskip\noindent \textbf{Exercise \theexercises}\ifx#1\empty\else\space(#1)\fi\par} {\par\medskip}
+
+	\newcounter{soln}[section]
+\renewcommand{\thesoln}{\thesection.\arabic{soln}}
+\renewenvironment{soln}
+  {\refstepcounter{soln}%
+   \begin{mdframed}[style=mdplainbox]\noindent\textbf{Solution \thesoln:}\par\smallskip\ignorespacesafterend}
+  {\end{mdframed}}
+
+
+
+\usepackage[all,2cell]{xy}
+\UseAllTwocells
+\xyoption{arc}
+\xyoption{rotate}
+\usepackage{enumitem}
+
+
+\title{225A: Topics in Number Theory}
+\author{moksh}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\newpage
+
+Topics we plan to cover
+
+\begin{enumerate}
+	\item Galois Cohomology
+	\item Central simple algebras
+	\item Brauer Groups and its relation with Galois Cohomology
+	\item Brauer group of local and global fields
+\end{enumerate}
+
+
+\begin{motivation}[Group Cohomology]
+Let $G$ be a discrete topological group. (topology is discrete)
+There exists a \vocab{classifying space} of $G$, written as $BG$.
+Is an Eilenberg-Maclane space, $K(G, 1)$.
+In other words, 
+$	\pi_i(BG) = 
+\begin{cases}
+	G & \textrm{if } i=1  \\
+	0 & \textrm{if } i>1  \\
+
+\end{cases}
+$.
+
+Existence can be shown by categorical means, has the universal property that... 
+
+Classifies all possible $G$-bundles.
+
+What about singular cohomology? $H_{\textrm{sing}}^{*} (BG, \mathbb{Z})$ 
+
+Usually homotopy groups are more complicated than homology groups, but the reverse is the case here.
+Very tough in general to compute the homology groups, and all homotopy groups are known.
+\end{motivation}
+This computation of singular homology groups is a good motivation for Group Cohomology, gives us a lot of information about the group $G$ itself.
+	
+Whole idea of Rep. Theory is to study the group itself, same idea here. 
+Calculate lots of invariants of $G$, such as information about the classifying space.
+For example, if $G$ is a Galois group, then its group cohomology gives us a lot of information.
+
+\begin{example}
+Let $G = \mathbb{Z}$.
+We have that $BG \cong S^1$.
+We have the universal property
+\[
+\begin{array}{c}
+	\xymatrix{
+		\mathbb{R}\ar[d] \\
+S^1
+	}
+\end{array}
+\]
+$H^{*}(S^1, \mathbb{Z})$ is well known.
+\end{example}
+
+\begin{example}
+$G = \mathbb{Z}/2 \mathbb{Z}$.
+$BG \cong \mathbb{RP}^{\infty}$.
+\[
+\begin{array}{c}
+	\xymatrix{
+	S^{\infty}\ar[d] \\
+\mathbb{RP}^{\infty}
+	}
+\end{array}
+\]
+Hence, $H^{*}(S^1, \mathbb{Z}) \cong H^{*}(\mathbb{RP}^{\infty}, \mathbb{Z})$.
+\end{example}
+These are what are called \vocab{Lens spaces}, and as we can see, can get complicated fast, since its already $\mathbb{RP}^{\infty}$ for $\mathbb{Z}/2 \mathbb{Z}$, we haven't even gotten to $\mathbb{Z}/p \mathbb{Z}$.
+Hence, studying this through a topological lens is quite difficult, which is why do things in a very algebraic manner.
+
+Group cohomology is isomorphic to the singular cohomology of $BG$, and its far easier to compute. 
+
+Let $G$ be a finite group.
+This isn't a necessary hypothesis, we just need that $G$ has the discrete topology. 
+However, we often work with Galois groups of finite extensions.
+This also helps us in the infinite case, because infinite Galois groups arise as inverse limits of all finite groups, with the profinite topology.
+\begin{definition}
+Let $A$ be an abelian group with a $G$-action.
+In other words, there exists a homomorphism $\alpha: G \to \Aut(A)$.
+In this case, we say that $A$ is a $G$-module.
+Let $\catname{G-mod}$ be the category of all $G$-modules
+\end{definition}
+
+\begin{exercise}
+	$\catname{G-mod}$ is an abelian category. 
+\end{exercise}
+
+Note that $\alpha$ can be the trivial homomorphism, so any abelian group can be represented as a $G$-module, so $\catname{G-mod}$ is non-trivial.
+Let $\mathbb{Z}[G]$ be the group algebra of $G$ over $\mathbb{Z}$.
+\begin{definition}
+	$\mathbb{Z}[G]$, as an abelian group, is the free abelian group on $G$, can be thought of as all $\mathbb{Z}$-linear combinations of $G$, with multiplication in the obvious manner.
+\end{definition}
+	\begin{itemize}
+		\item $\mathbb{Z}[G]$ is abelian $\iff$ $G$ is abelian.
+		\item $\mathbb{Z}[G]$ is left-Noetherian $\iff$ $G$ is finitely generated.
+	\end{itemize}
+	There exists a $\mathbb{Z}$-algebra map
+	\begin{align*}
+		\epsilon: \mathbb{Z}[G] &\to \mathbb{Z} \\
+		\epsilon \left(\sum m_i g_i\right) &= \sum m_i
+	\end{align*}
+	such that
+	\[
+		\begin{array}{c}
+			\xymatrix{
+				\mathbb{Z} \ar[r]\ar[dr]_{\textrm{id}} & \mathbb{Z}[G] \ar[d]^{\epsilon} \\
+							 & \mathbb{Z} \\
+						 }	
+	\end{array}
+	\]
+$\mathbb{Z}[G]$ is an \vocab{augmented} $\mathbb{Z}$-algebra.
+Let $I_G = \ker(\epsilon)$, which is the \vocab{augmented ideal of} $\mathbb{Z}[G]$.
+It is a two-sided ideal, and $\mathbb{Z} = \mathbb{Z} \oplus I_G$.
+
+\begin{lemma}
+	$I_G$ is the free abelian group on the set \textcolor{red}{finish later}
+\end{lemma}
+
+Let $G$ be a group, and let $A$ be a $G$-module.
+Then, $A$ is canonically a $\mathbb{Z}[G]$-module with
+\[
+	\left(\sum m_i g_i\right) a = \sum m_i  \left(g_i a\right).
+\]
+Conversely, any module over $\mathbb{Z}[G]$ is a $G$-module.
+
+\begin{proof}
+There exists a group homomorphism $\Phi: G \injto \mathbb{Z}[G]^X$ by sending $g$ to $1 \cdot g$.
+Similarly, there exists a map $\mathbb{Z}[G]^{\times }\to \Aut(A)$.
+The composition is a group homormophism from $G$ to $\Aut(A)$, which is the definition of a group action, so we are done.
+\end{proof}
+
+Remember that for a fixed ring $R$, we have that category $\catname{R-mod}$ (left $R$-modules) is an abelian category. 
+\begin{proposition}
+	There exists an equivalence of abelian categories $\catname{G-mod} \to \catname{\mathbb{Z}[G]-mod}$ 
+\end{proposition}
+\begin{proof}
+The previously discussed correspondence.
+\end{proof}
+
+Thus, we make no distinction between these two categories in this class.
+
+There is a functor 
+\begin{align*}
+	F: \catname{G-mod} &\to \catname{Ab} \\
+	A  &\mapsto A^G
+\end{align*}
+where $A^G$ is the subgroup of $G$-invariant elements of $A$.
+We now wonder properties this functor has, left-exact, right-exact, exact?
+
+\begin{fact}
+Consider the trivial functor that represents an arbitrary abelian group as a trivial $G$-module.
+Then, $\left( \left(\dashbk\right)^{tr}, \left(\dashbk\right)^{G}\right)$ are an adjoint pair, and we have that
+$\Hom_{\catname{Ab}}\left(A, B^G\right) \to_{\sim} \Hom_{\catname{G-mod}} \left(A^{tr}, B\right)$ 
+\end{fact}
+
+\begin{corollary}
+ $\left(\dashbk\right)^G$ is left exact. 
+\end{corollary}
+
+We have that for an exact sequence
+\[
+0 \to A' \to A \to A'' \to 0
+\] 
+in $\catname{G}-mod$,
+\[
+0 \to A'^G \to A^G \to A''^G 
+\] 
+is exact.
+
+\begin{exercise}
+Showcase an instance where the last map is not surjective.
+\end{exercise}
+Hence, this functor is left-exact but not necessarily right exact.
+In homological algebra, when we have such a situation, we construct the right-derived functor, and this is what we call Group Cohomology.
+The existence of this right-derived functor happens when we have enough injectives, i.e. every object injects inside an injective object.
+
+\section{Class 2}
+\begin{theorem}
+For an arbitrary ring $R$, the category $\catname{R-mod}$ has enough injectives.
+\end{theorem}
+\begin{proof}
+	(Sketch)
+	\begin{lemma}
+	Let $A$ be an abelian group.
+	Then, there exists an injective abelian group $I$ and an injection of abelian groups $A \injto I$  
+	\end{lemma}
+	\begin{proof}
+	Let $S = \Hom_{\catname{Ab}}(A, \mathbb{Q}/\mathbb{Z})$, and $I = \left(\mathbb{Q}/\mathbb{Z}\right)^S$.
+	Define $A \to I$, by sending every element $a$ to $ \left(\alpha(a)\right)_{\alpha \in S}$.
+	Check that this has no kernel, since there is no element that sends to $0$ under every homomorphism into $\left(\mathbb{Q}/\mathbb{Z}\right)$  
+	\end{proof}
+\[
+	\begin{array}{c}
+\xymatrix{
+	M \ar[r]_{\cong} \ar[d]& \Hom_R(R, M) \ar@{^{(}->}[d] \\
+	\Hom_{\mathbb{Z}}(R, I) & \Hom_{\mathbb{Z}}(R, M) \ar@{^{(}->}[l] \\
+}
+\end{array}
+\] 
+where $M \injto I$ as in the \textcolor{red}{the lemma}. 
+Thus, it is enough to show that $I' = \Hom_{\mathbb{Z}}(R, I)$ is an injective $R$-module.
+
+\begin{proposition}
+Let $A \injto B$ be an inclusion of $R$-modules.
+We need to show that $\Hom_R(B, I') \surjto \Hom_R(A, I')$ by extension of scalars.
+
+\[
+	\begin{array}{c}
+\xymatrix{
+	\Hom_R(B, I') \ar[r] \ar[d]_{S} & \Hom_R(A, I') \ar[d]^{S} \\
+	\Hom_{\mathbb{Z}}(B, I) \ar@{->>}[r]& \Hom_{\mathbb{Z}}(A, I) \\
+}
+\end{array}
+\] 
+\end{proposition}
+\end{proof}
+\begin{corollary}
+	$\catname{\mathbb{Z}[G]-mod}$ has enough injectives 
+\end{corollary}
+
+\begin{lemma}
+	$A^G = \Hom_{\mathbb{Z}[G]}(\mathbb{Z}, A)$
+\end{lemma}
+\begin{proof}
+	By adjointness, $\Hom_{\mathbb{Z}[G]}(\mathbb{Z}, A) \to_{\cong} \Hom_{\mathbb{Z}}(\mathbb{Z}, A^G) = A^G$.
+\end{proof}
+Let $A \to I$ be an injective resolution in $\catname{\mathbb{Z}[G]-mod}$.
+Then, we define $\Ext_{\mathbb{Z}[G]}^{i} (\mathbb{Z}, A) = H^i \left(\Hom_{\mathbb{Z}[G]}(\mathbb{Z}, I)\right)$, for $i \geq 0$.
+
+\begin{definition}
+	We let $H^{i}(G, A) = \Ext_{\mathbb{Z}[G]}(\mathbb{Z}, A)$ and call this the $i$'th group cohomology of $G$ with coefficients in $A$.
+\end{definition}
+
+\begin{corollary}
+$H^0(G, A) \cong A^G$ 
+\end{corollary}
+
+\begin{theorem}
+$\Ext_R^i(M, N) = 0$ for all $i>0$ if $M$ is projective (also true for $M$ injective).   
+\end{theorem}
+
+Thus, we can take a projective resolution of $M$, or injective resolution of $N$ to compute the group cohomology.
+Then, if we can find a free resolution of $\mathbb{Z}$ over $\mathbb{Z}[G]$, we are done.
+\textbf{This is the central idea of group/Galois cohomology, to find some canonical free/projective resolutions of $\mathbb{Z}$.}
+
+\begin{corollary}
+	If $f: A \to B$ is a $G$-equivariant map (morphism in $G\catname{-mod}$), then there exists a canonical map $f^i: h^i(G, A) \to H^i(G, B)$. 
+\end{corollary}
+
+\begin{corollary}
+Recall that $H^0(G, A) = A^G$.
+We also have that $H^1(G, A)$ is the group of equivalence classes of extensions of $\mathbb{Z}$ by $A$ in $\catname{\mathbb{Z}[G]-mod}$  
+\end{corollary}
+An \vocab{extension} of $A$ by $B$ is an exact sequence
+	\[
+	0 \to B \to H \to A \to 0
+	\] 
+	Two exactensions are said to be isomorphic iff there is an isomorphism $H \to H'$ such that the morphism of exact sequences commutes.
+	Equivalence classes of extensions admit a group action, given by the fiber product.
+	\begin{corollary}
+	Let $0 \to A' \to A \to A''$ be a an exact sequence of $G$-modules.
+	Then, there exists a long exact sequence
+	\[
+\dots \to H^i(G, A') \to H^i(G, A) \to H^i(G, A'') \to H^{i+1}(G, A^i) \to \dots	
+	\] 
+	\end{corollary}
+	
+	Let $G$ be a finite group (not necessarily abelian).
+	We define an element $N \in \mathbb{Z}[G]$ as $N = \sum_{g \in G} g$.
+	This is called the \vocab{norm element} of $\mathbb{Z}[G]$, related to the norm of an element in the context of Galois theory. 
+
+	\begin{proposition}
+		$N \in Z(\mathbb{Z}[G])$. 
+	\end{proposition}
+	\begin{proof}
+	Check it.
+	\end{proof}
+	\begin{proposition}
+		$N$ is $G$-invariant under the action of $G$ on $\mathbb{Z}[G]$. 
+	\end{proposition}
+	\begin{proof}
+	Trivial.
+	\end{proof}
+
+	\begin{theorem}
+	Let $|G| = m < \infty$.
+	Let $R$ be a commutative ring with $m \in R^x$, and let $A$ be a $G$-module s.t. $A$ is also an $R$-module.
+	Then, $\frac{N}{m}$ is a central idempotent in $R[G]$.
+	Moreover, $H^i(G, A) = 0$ for all $i \neq 0$.  
+	\end{theorem}
+	This shows that in this situation, the theory of Galois cohomology is trivial.
+	For instance if $A$ is a $\mathbb{Q}$ or $\mathbb{R}$ or $\mathbb{C}$ vector space, it gives you no information.
+	This is because Galois cohomology is a \emph{torsion phenomenon}.
+	\begin{proof}
+	It is easy to see that $\frac{N}{m} $ is central.
+	Note that $N^2 = N \left(\sum g_i\right) = \sum g_i N$ since $N$ is central.
+	However, this is equal to $mN$, so $\left(\frac{N}{m}\right)^2 = \frac{N}{m}$
+	Let $e$ represent $\frac{N}{m}$.
+
+	From Atiyah and Macdonald Ch.1 exercises, recall that a nontrivial idempotent splits a ring into the direct product of subrings; we can write $R[G] = R[G]e \times R[G]e'$ where $e' = 1-e$.
+	Let these be represented by $R_1, R_2$ respectively.
+	Since these are both direct summands of $R[G]$, which is free, we have that they are both projective modules.
+
+
+	Let $ $ 
+	Thus, we have that $\Ext_{R[G]}^i(R_1, M) = 0$ for all $R[G]$-modules $m$ and every $i\neq 0$, by taking a projective resolution.
+		We also have that $H^0(G, A) = eA$ 
+	\end{proof}
+	
+	\section{Class 3}
+	\begin{corollary}
+		If $G$ is finite and $A$ is a $G$-module s.t. $A$ is also $\mathbb{Z}[1/m]$ module, e.g. a $\mathbb{Q}$-vector space, then $H^i(G, A) = 0$ for all $i \neq 0$.     
+	\end{corollary}
+	
+		\begin{corollary}
+			If $G$ is finite, then $H^0(G, \mathbb{Z}) = \mathbb{Z}$, $H^1(G, \mathbb{Z}) = 0$, and $H^i(G, \mathbb{Z}) \cong H^{i-1}(G, \mathbb{Q}/\mathbb{Z})$ for all $i>0$.   
+		\end{corollary}
+
+		\begin{proposition}
+		We have an exact sequence of trivial $G$-modules
+		\[
+		0 \to \mathbb{Z} \to \mathbb{Q}\to \mathbb{Q}/\mathbb{Z} \to 0
+		\] 
+		\end{proposition}
+
+		\begin{corollary}
+		We have a long exact sequence
+		\[
+			0 \to H^0(G, \mathbb{Z}) \to H^0(G, \mathbb{Q}) \to H^0(G, \mathbb{Q}/\mathbb{Z}) \xrightarrow{0} H^1(G, \mathbb{Z}) \to \dots
+		\] 
+		\end{corollary}
+
+		Let $G$ be any discrete group.
+		We construct a free resolution of $\mathbb{Z}$ as a $\mathbb{Z}[G]$-module.
+		Let $B_0 = \mathbb{Z}[G]$, and for $n>0$ let $B_n$ be the free $\mathbb{Z}[G]$-module on $G^n$   
+
+		We notice that $\Hom_{\mathbb{Z}[G]}(B_n, B_{n-1}) = \Hom_{\catname{Set}}(G^n, B_{n-1})$.
+
+		\textcolor{red}{fill in details from images i took}
+		Let $d^n = \sum_{i=0}^n (-1)^{n} d_i^n: G^n \to B_{n-1}$. 
+		
+something something simplicial objects in categories, Dold-Kan correspondence between simplicial abelian groups and chain complexes.
+
+		\begin{theorem}
+		This sequence is exact
+		\end{theorem}
+		\begin{proof}
+		
+		
+To show a complex is acyclic, we can manually compute boundary maps, show all homologies are zero.
+But instead, we can prove the strong statement, which is that it is nullhomotopic, which is often easier.
+
+We want to construct maps $h_n: B_n \to B_{n+1}$ for all $n \geq -1$ such that $h_{n-1} \circ d^n - d^{n+1} \circ h_n = \id_{B_n}$.
+Define $h_n: B_n \to B_{n+1}$ 
+		\end{proof}
+
+		\section{Class 4}
+Let $G$ be a discrete group.
+The \vocab{bar resolution} of $\mathbb{Z}$ as a $\mathbb{Z}[G]$ module is the above resolution.
+If $A$ is a $G$-module, then write $C^n(G, A) = \Hom_{\mathbb{Z}[G]}(B_n, A) = \Hom_{\catname{Set} }(G^n, A)$.
+
+$Z^n(G, A) = \ker(d_n^{*})$
+
+$B^n(G, A) = \img(d_{n-1}^{*})$.
+
+
+$H^n(G, A) = Z^n(G, A)/B^n(G, A) = \frac{n-\textrm{cocycles in }A }{n-\textrm{coboundaries in }A} $ 
+
+\begin{theorem}
+	Suppose $G$ is finite of order $m$, and let $A$ be a $G$-module.
+	Then, $H^n(G, A)$ is annihilated by $m$, i.e., it is a $\mathbb{Z}/m$-module for $n>0$. 
+\end{theorem}
+
+\begin{proof}
+
+:wLet $B \xrightarrow{\varepsilon} \mathbb{Z}$ be the bar resolution of $\mathbb{Z}$ as a $\mathbb{Z}[G]$ module.
+
+Consider the map of complexes
+
+\[
+\xymatrix{
+	\dots \ar[r]^{d_2} \ar[d]_{m} & B_1 \ar[r]^{d_1}\ar[d]_{m}& B_0 \ar[d] _{m-N} \\
+	\dots \ar[r]^{d_2} & B_1 \ar[r]^{d_1} & B_0 \\
+}
+\] 
+
+It remains to show that this map is null-homotopic in the degrees.
+
+Let $\nu_n: B_n \to B_{n+1}$ be the map given by $\nu_n(g_1 | \dots | g_n) = \epsilon_n \sum_{g \in G} (g_1 | \dots | g_n | g$
+where $\epsilon_n = (-1)^{n+1}$.
+We need to show that $\nu_{n-1} \circ d_n + d_{n+1} \circ \nu_n = m$ is the degree. 
+
+\end{proof}
+
+\begin{corollary}
+	If $A$ is $\mathbb{Z}[1/m]$ module with $G$-action, then $H^i(G, A) = 0$ for all $i>0$.  
+\end{corollary}
+\begin{proof}
+$m$ is an automorphism of $A$, so it is an automorphism of $H^*(G, A)$ by applying cohomology functor.
+But $m$ annihilates $H^i(G, A)$, so if an automorphism annihilates the group, the group is trivial. 
+\end{proof}
+
+\begin{lemma}
+Suppose $|G| = m$, and $A$ is a finitely generated abelian group that is a $G$-module over $A$.
+Then, all cohomology groups are also finitely generated abelian.
+\end{lemma}
+
+\begin{corollary}
+Let $|G| = m$ and let $A$ be a $G$-module where is a finitely generated abelian group.
+Then, $H^0(G, A)$ is a finite generated abelian group and $H^i(G, A)$ is finite for $i>0$.  
+\end{corollary}
+
+\begin{proof}
+By the lemma, $H^i(G, A)$ is finitely generated abelian.
+But it is also killed by $m$, hence torsion, and finite.
+\end{proof}
+Let $G= \cyc{n}$.
+Let $N \in \mathbb{Z}[G]$ be the norm element.
+Note that $\mathbb{Z}[\mathbb{Z}] = \mathbb{Z}[t, t^{-1}]$, so $\mathbb{Z}[\cyc{n}] = \mathbb{Z}[t]/t^n-1$.
+Let $G =\langle \sigma\rangle$.
+Then, $\sigma = t$ and $N = 1 + \sigma + \sigma^2 + \dots + \sigma^{n-1}$.
+
+\section{Class 6}
+
+Let $L/K$ be a finite Galois extension with group $G$, then $H^1(G, L^{\times }) = 0$, as we saw last class.
+What is $H^1(G, L)$?
+
+\begin{lemma}
+Suppose $G$ is a discrete group and $H \injto G$ is a subgroup of finite index. 
+Then, under the inclusion of $\mathbb{Z}$-algebras $\mathbb{Z}[H] \injto \mathbb{Z}[G]$, we have that $\mathbb{Z}[G]$ is a free $\mathbb{Z}[H]$-module with basis $G/H$.
+\end{lemma}
+\begin{proof}
+We knew that $\mathbb{Z}[H]$ is a free $\mathbb{Z}$-module with basis $H$ and $\mathbb{Z}[G]$ is a free $\mathbb{Z}$-module with basis $G$.
+Let $G/H = \left\{He, Hg_1, \dots, Hg_n\right\}$.
+
+Then, note that the map $\Phi: \bigoplus_{i=0}^n \mathbb{Z}[H] \ol{g_i} \to \mathbb{Z}[G]$ is an isomorphism.
+\end{proof}
+Let $\alpha: R \to S$ be a (not necessarily commutative) ring homomorphism.
+Assume that $S$ is projective (e.g. free) $R$-module via $\alpha$.
+	Let $M \in R-\catname{mod}$.
+	Then, we can define two $S$-modules 
+	\begin{enumerate}[label=\arabic*)]
+		\item $M\otimes_R S$.
+		\item $\Hom_R(S, M)$. 
+	\end{enumerate}
+\begin{proposition}
+$M \otimes_R(S)$ is called the induced $S$-module.
+$\Hom_R(S, M)$ is called the coinduced $S$-module. 
+Under these conditions, a canonical isomorphism $\Ext_S^i(N, \Hom_R(S, M)) \cong \Ext_R^i(N, M)$ exists for all $N \in S-\catname{mod}$ and $i\geq 0$.   
+\end{proposition}
+
+\begin{proposition}
+Let $\alpha: R \to S$ be a (not necessarily commutative) ring homomorphism.
+Assume that $S$ is projective (e.g. free) $R$-module via $\alpha$.
+Let $P, M \in S-\catname{mod}$, $N \in R-\catname{mod}$, and $h: M \to N$ an $R-\catname{mod}$ homomorphism.
+
+Under these conditions, there is a canonical isomorphism $\Ext_S^i(P, \Hom_R(S, M)) \cong \Ext_R^i(P, N)$. 
+\end{proposition}
+
+\begin{proof}
+Let $P^{\bullet} \to N$  be a free $S$-module resolution.
+Then, $P^{\bullet} \to N$ is also a projective (free, if $S$ is free over $R$) $R$-module resolution.
+\begin{align*}
+\Rightarrow \Ext_R^i(N, M) &= H^i(\Hom^{\bullet}_R(P^{\bullet}, M)) \\
+ &= H^i(\Hom_S(P, \Hom_R(S, M))) \\
+&= \Ext_S^i(N, \Hom_R(S, M)) \\
+\end{align*}
+\end{proof}
+
+\begin{corollary}[Shapiro Lemma]
+Let $G$ be a discrete group and $H \injto G$  a subgroup of finite index.
+
+Take $R = \mathbb{Z}[H]$, $S= \mathbb{Z}[G]$.
+Let our $M$ in the previous prop. refer to any $H$-module, $A$ and let our $N$ refer to $\mathbb{Z}$ as a trivial $G$-module.
+\end{corollary}
+This satisfies the hypotheses, so we get that $\Ext_S^i(\mathbb{Z}, \textrm{coind}_H^G(A)) \cong \Ext_R^i(\mathbb{Z}, A) \Leftrightarrow H^i(G, \textrm{coind}_H^G(A)) \cong H^i(H, A)$ for all $i$. 
+
+\begin{corollary}
+Let $G$ be a finite group and let $A$ be any abelian group.
+Then, $H^i(G, \textrm{coind}_{*}^G(A)) = \begin{cases} A & \text{if } i=0 \\ 0 & \text{if } i>0\end{cases}$ where $\textrm{coind}_{*}^{G}(A) = \Hom_{\mathbb{Z}}(\mathbb{Z}[G], A)$ 
+\end{corollary}
+
+Take Shapiro lemma with $H = \left\{e\right\}$.
+
+\begin{theorem}[Hilbert 90 (additive version)]
+	Let $L/K$ be a finite Galois extension with Galois grp $G$.
+	Then, we have that $H^i(G, L) = 
+\begin{cases}
+	K & \text{if } i = 0 \\
+0 & \text{if } i>0 \\
+\end{cases}
+	$ 
+\end{theorem}
+\begin{proof}
+By normal basis theorem, there exists $x \in L$ such that $\Orb_x$ under $G$ form a $K$-basis of $L$.
+Now, consider $\Hom_{\mathbb{Z}}(\mathbb{Z}[G], K) \cong \mathbb{Z}[G] \otimes_{\mathbb{Z}} K \cong  K[G] \cong L$. 
+
+Take $H = \left\{e\right\} \injto G$, $K$ as $H$-module.
+We proved that $\textrm{coind}_{*}^G(K) = L$, so $H^i(G, L) = H^i(\left\{e\right\}, K)$ which is $K$ if $i=0$, trivial otherwise.  
+\end{proof}
+
+\begin{corollary}
+Let $L/K$ be a cyclic extension with Galois group $G = \langle \sigma\rangle$.
+Then, there exists an exact sequence 
+\[
+	0 \to K \to L \xrightarrow{\sigma-1} L \xrightarrow{\Tr} K \to 0
+\]
+\end{corollary}
+
+\begin{proof}
+By Hilbert 90, we have that $0 = H^i(G, L) = NL/(\sigma-1)L$.
+We also have that $0 = H^2(G, L) = L^G/NL = L^G/\Tr(L) = K/\Tr(L)$ 
+\end{proof}
+
+\begin{corollary}
+Let $L/K$ be a cyclic extension of degree $p$, where $p = \chara(K) >0$.
+Then, $\exists x \in L$ such that $L = K(x)$ and $x^p - x \in K$.   
+\end{corollary}
+\begin{proof}
+Take $1 \in L$ such that $\Tr(1) = p = 0$.
+Thus, $\exists x \in L$ s.t. $\sigma(x) - x = 1$.
+Thus, $\sigma(x) = x+ 1$, so $x$ is not fixed by $\sigma$ and $x  \not \in K$.
+This, $L = K(x)$.
+Then, expand $\sigma(x^p - x)$ and we get that $x^p - z \in K$. 
+\end{proof}
+ 
+Let $\alpha: R \to S$ be a (not necessarily commutative) ring homomorphism.
+Suppose we have 
+\begin{itemize}
+	\item $S$-modules $P$ and $M$
+	\item $R$-module $N$.
+	\item An $R$-linear map $h: M \to N$   
+\end{itemize}
+\begin{theorem}
+Under these conditions, there is a natural homomorphism $h_{*}: \Ext_S^i(P, M) \to \Ext_R^i(P, N)$, which is $R$-linear if $R$ is commutative.
+\end{theorem}
+
+\section{Class 7}
+Suppose $G \circlearrowright A$ for an abelian group $A$, and there exists a homomorphism $\phi: G' \to G$.
+Then, $A$ is a $G'$ module in the obvious manner.
+
+Is there a connection between $H^i(G, A)$ and $H^i(G', A)$? 
+Observe that there is a canonical inclusion $H^0(G, A) = A^G \injto A^{G'} = H^0(G', A)$.
+
+We now prove the theorem proved in the last class.
+Let $\alpha: R \to S$ be a ring homomorphism, and we have
+\begin{enumerate}
+	\item $S$-modules $P$ and $M$
+	\item $R$-module $N$ 
+	\item An $R$-linear map $h: M \to N$. 
+\end{enumerate}
+
+\begin{proof}
+Let $M \to I^{\bullet}$ be an injective resolution of $M$ in $S-\catname{mod}$.
+Let $I^{\bullet} \to J^{\bullet}$ be an injective resolution of $I^{\bullet}$.
+Take the total complex,and look at maps 
+\[
+	\xymatrix{
+	\Hom_S(P, M) \ar[r] & \Hom_S(P, I^{\bullet}) \ar[d]^{\alpha^*}\ar@{-->}[dl]\\
+               \Hom_R(P, J^{\bullet}) & \Hom_R(P, I^{\bullet}) \ar[l] \\
+       }
+\]
+Thus, there exists a map $\alpha^{*}: H^i(\Hom_S(P, I)) \to H^i(\Hom_R(P, J))$.
+However, the LHS, resp. RHS are simply $\Ext_S^i(P, M) \to \Ext_R^i(P, M)$.  
+\end{proof}
+
+An application: Let $\phi: G' \to G$ be a group homomorphism and $A \in G-\catname{mod}$.
+Let $B$ be a $G'$ module and let $h: A \to B$ be a $G'$ equivariant map.
+Then, there exists a canonical group homomorphism $h_{*}$ 
+\end{document}
+
+
