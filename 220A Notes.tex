@@ -1,0 +1,599 @@
+\documentclass[12pt]{scrartcl}
+\usepackage[sexy, href, sectionmark, mdthm]{moksh}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{8pt}
+\DeclareMathOperator{\ob}{ob}
+
+
+\makeatletter
+\let\c@exercise\c@theorem
+\makeatother
+% makes exercises the same counter as theorem/everything else.
+
+\newcounter{exercises}[section]
+\renewcommand\theexercises{\thesection.\arabic{exercises}}
+\newenvironment{exercises}[1][]
+{\refstepcounter{exercises}\par\medskip\noindent \textbf{Exercise \theexercises}\ifx#1\empty\else\space(#1)\fi\par} {\par\medskip}
+
+	\newcounter{soln}[section]
+\renewcommand{\thesoln}{\thesection.\arabic{soln}}
+\renewenvironment{soln}
+  {\refstepcounter{soln}%
+   \begin{mdframed}[style=mdplainbox]\noindent\textbf{Solution \thesoln:}\par\smallskip\ignorespacesafterend}
+  {\end{mdframed}}
+
+
+
+\usepackage[all,2cell]{xy}
+\UseAllTwocells
+\xyoption{arc}
+\xyoption{rotate}
+\usepackage{enumitem}
+
+
+\title{220A: Algebra}
+\author{moksh}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\newpage
+
+\section{Class 1}
+
+
+\subsection{Overview}
+
+Topics we plan to cover:
+\begin{itemize}
+	\item Review Group Theory
+	\item Language of Categories
+	\item Representations of finite groups
+\end{itemize}
+
+Rough sketch of grade breakdown:
+\begin{itemize}
+	\item Psets: 10\%
+	\item Midterm: 50\%
+	\item "final project": 40\%
+\end{itemize}
+
+Opportunity to improve grade: oral exam. 
+Score could be positive, negative, or 0.
+
+References: 
+\begin{itemize}
+	\item Algebra, by Serge Lang. 
+	\item Dummit and Foote.
+\end{itemize}
+For the representation of finite groups, he will present it in the way he likes w/o a reference.
+
+He will not delve deeply into set-theoretic/foundational issues, assumes knowledge of what a set is, later assumes knowledge of what a \vocab{universe} is.
+
+\subsection{Group Actions}
+A \vocab{group action} of a group $G$ , or a \vocab{$G$-action} on a set $X$ is a map 
+\begin{align*}
+	\phi: G \times  X &\to X \\
+	(g, x) &\mapsto g \cdot x
+\end{align*}
+that satisfies 
+\begin{enumerate}
+	\item $1 \cdot x = x$
+	\item $(gh)x = g(hx)$
+\end{enumerate}
+Equivalently, an action of $G \circlearrowright X$ is the same as a group homomorphism $G \to \mathfrak{S}_X = \Aut(X)$, where $\Aut(X)$ denotes the group of all permutations of $X$.
+Through this perspective, $g \cdot x$ is equal to $\phi(g) \in \Aut(X)$, evaluated at $x \in X$. 
+Later, when $X$ is not necessarily a set, we often use this second equivalent statement as a definition, to avoid foundational issues.
+
+\textcolor{red}{ask him abt the thing he said; brothers and sisters who use his notation for $\mathfrak{S}(X)$, smth smth hodge theory?}
+
+We call $X$ in the above definition a $G$-set.
+
+
+	\begin{itemize}
+		\item A group action $\phi: G \to \Aut(X)$ is said to be \vocab{faithful} iff $\ker{\phi}$ is trivial. 
+		\item A group action $\phi: G \to \Aut(X)$ is said to be \vocab{transitive} iff for every $x, y \in X$, there exists some $g \in G$ such that $g \cdot x = y$   
+	\end{itemize}
+	\begin{example}
+A canonical example for a faithful and transitive group action is when $G = \Aut(X)$, and $\phi: G \to \Aut(X)$ is the identity.
+	\end{example}
+
+	\begin{definition}[Orbit]
+	For an element $x \in X$, we have that its \vocab{orbit}, denoted by $G \cdot x$, or $\Orb_x$, is the set $\left\{g \cdot x: g \in G\right\} \subset X$.
+	\end{definition}
+	
+	\begin{definition}[Stabiliser]
+For an element $x \in X$, its \vocab{stabiliser}, denoted by $G_x$ or $\Stab_x$, is the set $\left\{g \in G: g \cdot x = x\right\} \leq G$.
+\end{definition}
+We can easily verify that ``being in the same orbit'' is an equivalence relation on $X$, which hence partitions it.
+Not all equivalence classes are necessarily of the same size.
+
+Fix an $x \in X$, and consider the map of sets
+\begin{align*}
+	G &\xrightarrow{f} G \cdot x\\
+	g &\mapsto g \cdot x
+\end{align*}
+
+\begin{proposition}
+	\label{s1.1}
+We claim (and can easily verify that) $f$ factors through $G/ \Stab_x$ in the below form 
+\[
+\begin{array}{c}
+	\xymatrix{
+		G \ar[r]^f \ar[d]_{\pi}	& \Orb_x\\
+		G/\Stab_x \ar@{.>}[ur]_{\exists! h} 
+	}
+\end{array}
+\]
+\end{proposition}
+Additionally, we can also verify that $h$ is an isomorphism of sets (bijection).
+\begin{corollary}
+	\label{s1.2}
+$|G: \Stab_x| = |\Orb_x|$.
+\end{corollary}
+
+\textbf{Throughout this course, all group actions, cosets, and modules (which will not come up) are all left.}
+\begin{example}
+Let $G$ be a group.
+Then, we can consider the action of $G$ on itself, in one of several ways.
+\item We have the \vocab{left regular action}, where $g \cdot x = gx$.
+\item Similarly, we have the \vocab{right regular action}, where $g \cdot x = xg$. 
+\item We have that \vocab{conjugation action}, given by $g \cdot x = gxg^{-1}$.
+	In this case, we have that $\Stab_x$ is the \vocab{centraliser} of $X$, denoted by $C_G(x)$. 
+\end{example}
+
+Recall that:
+\begin{itemize}
+	\item $Z(G)$ is the \vocab{centre} of $G$, the set of elements that commute with every element in $G$.
+			\item $C_G(H)$ is the \vocab{centraliser} of the subgroup $H$, the set of elements that commutes with each element of $H$, or equivalently the set of elements that fix $H$ pointwise under conjugation.
+		\[
+			C_G(H) \defeq \left\{x \in G: xy = yx \, \textrm{for all }y \in H\right\}
+		\] 
+	\item $C_G(G)$ is referred to as the \vocab{centre} of $G$, and denoted by $Z(G)$.
+	\item $N_G(H)$ is the \vocab{normaliser} of the subgroup $H$, the set of elements that fix $H$ under conjugation.
+		\[
+		N_G(H) \defeq \left\{x \in G: xHx^{-1} \subset H\right\} = \left\{x \in G: xHx^{-1} = H\right\}
+		\]
+\end{itemize}
+
+We can easily verify that
+\begin{itemize}
+	\item $C_G(H)$, and $N_G(H)$ are subgroups of $G$.
+	\item $C_G(H) \leq N_G(H)$ 
+\end{itemize}
+
+
+\subsection{Group action of conjugation}
+\begin{proposition}
+	\label{s1.3}
+If $G \circlearrowright G$ by conjugation, then $[G: C_G(x)] = |\Orb_x|$ for all $x \in X$ . 
+\end{proposition}
+\begin{proof}
+Note that $\Stab_x = C_G(x)$ and apply \ref{s1.2}
+\end{proof}
+
+\begin{corollary}
+	\label{s1.4}
+Suppose $G \circlearrowright G$ by conjugation, and let $x \in G$ with orbit itself.
+Then, $C_G(x) = G \Leftrightarrow x \in Z(G)$.
+\end{corollary}
+We also call the orbits under $G \circlearrowright G$ by conjugation, \vocab{conjugacy classes} of $G$. 
+\begin{theorem}[Class equation]
+	\label{s1.5}
+	For a finite group $G$, we have that
+	\[
+|G| = |Z(G)| + \sum_{i=1}^r |G : C_G(x_i)|	
+	\] 
+	where the $x_i$s runs over representatives of nontrivial conjugacy classes.
+\end{theorem}
+\begin{proof}
+	Note that the conjugacy classes of $G$ partition $G$, and by \ref{s1.4}, the conjugacy class of an element $x$ is $\{x\}$ iff $x \in Z(G)$.
+The total size of an singleton orbits is equal to $Z(G)$, and for $x_i \not \in Z(G)$, the conjugacy class of $x_i$ has order $|G : C_G(X)|$ by \ref{s1.3}.
+\end{proof}
+If $G \circlearrowright X$, then define the \vocab{fixed points} of $G$ to be:
+\[
+X^G \defeq \left\{x \in X: \Orb_x = \left\{x\right\}\right\}
+\] 
+Recall that a finite \vocab{$p$-group} is a group with order $p^a$.
+\begin{proposition}
+	\label{s1.6}
+Let $G$ be a finite $p$-group.
+Then, for any finite $G$-set $X$, we have that
+\[
+	\abs{X^G} \equiv X \mod p
+\]  
+\end{proposition}
+\begin{proof}
+$X$ can be partitioned into fixed points and nontrivial orbits.
+Picking an $x_i$ from each nontrivial orbit, we have that each orbit has size $|G : C_G(x_i)| \equiv 0 \mod p$, so we are done. 
+\end{proof}
+
+\begin{corollary}
+	\label{s1.7}
+Any $p$-group has nontrivial center.
+\end{corollary}
+\begin{proof}
+	Let $X = G$.
+Consider $G \circlearrowright X$ by conjugation and note that $X^G = Z(G)$, and is hence equivalent mod $p$ to $|X|$.
+Since $|X| = |G| = p^a$, we have that $|Z(G)| \equiv 0 \mod p$.  
+However, $1_G \in Z(G)$, so $|Z(G)| > 1$, and we are done. 
+\end{proof}
+
+
+\section{Class 2}
+\begin{proposition}
+If $|G| = p^2$, then $G$ is abelian. 
+\end{proposition}
+\begin{proof}
+Either $Z(G)$ has order $p$, or $p^2$.
+If $|Z(G)| = p^2$, we are done.
+Say $|Z(G)| = p$, then since $Z(G)$ is normal, $|G/Z(G)| = p$, and is hence cyclic, so isomorphic to $\cyc{p}$.
+Let $[g]$ be a generator of this group, so for every $h \in G$, we have that $hZ(G) = g^mZ(G)$.
+
+Now, let $g_1, g_2 \in G$.
+We have that $g_1 = g^{m_1}z_1$ for some $z_1 \in Z(G)$, and $g_2 = g^{m_2}z_2$ for some $z_2 \in Z(G)$.
+Then, simply verify that they commute, so we are done. 
+\end{proof}
+
+\textcolor{red}{$\catname{CRing}$ is equivalent to the category of affine schemes. How do we even define an affine scheme if not the spectrum of some commutative ring?}
+
+\begin{proposition}[Cauchy's lemma]
+	If $p \mid |G|$ then there exists $g \in G$ with $|g| = p$ 
+\end{proposition}
+
+\begin{proof}
+Let $S = \left\{(x_1, x_2, \dots, x_p) : \prod_i x_i = 1\right\}$.
+Note that $|S| = |G|^{p-1}$.
+Consider the action $\cyc{p} \circlearrowright S$ by cycling the $p$-tuples.
+The fixed points of this action are the constant sequences, which are the sets of the form $x^p = 1$ by definition of $S$.
+
+We know that the number of fixed points is equivalent to $|S| \mod p$, so we are done.
+\end{proof}
+
+Let $G$ be a finite group, $p$ prime.
+Let $|G| = p^am$ for $a \in \mathbb{Z}^{\geq 0}$ and $\gcd(p, m) = 1$.
+A Sylow $p$-subgroup of $G$ is a subgroup of $P \leq G$ of order $p^a$.  
+\begin{theorem}[Sylow's Theorem]
+		Let $G$ be a finite group with order $p^am$ for some prime $p$ and $\gcd(m, p) = 1$.
+		Then,
+	\begin{enumerate}[label=\alph*)]
+			\item $G$ has a Sylow $p$-subgroup.
+		\item If $H$ is a $p$-subgroup of $G$, and $P$ is a Sylow $p$-subgroup of $G$, then $H$ is contained in some conjugate of $P$.
+		\item Let $n_p$ be the number of Sylow $p$-subgroups.
+			Then, $n_p \mid m$ and $n_p \equiv 1 \mod p$.  
+	\end{enumerate}
+\end{theorem}
+\begin{motivation}
+We should view this proof not as important in itself, but rather because of the techniques it uses.
+It should be considered a display of the power of group actions.
+\end{motivation}
+\begin{proof}
+	\begin{enumerate}[label=\alph*)]
+		\item Let $\Sigma$ be the set of $p$-subgroups of $G$, and we impose a partial order on $\Sigma$ based on the size of the subgroups.
+			Note that $\Sigma$ is nonempty by the existence of the identity subgroup, as well as by Cauchy's Lemma.
+
+			Let $p \in \Sigma$ have maximal order.
+			Suppose for contradiction that $p \mid [G: P]$.
+			Consider $P \circlearrowright G/P$ by \emph{left} multiplication. 
+			A fixed point of this action is precisely the set $g \in G: xgP = gP\textrm{, for all } x \in P$.
+			In other words, $g^{-1}xg \in P$ for all $x \in P$, i.e. the normalizer of $P$, $N_G(P)$.
+			Since the set of fixed points is a subset of $G/P$,  it is $N_G(P)/P$.
+			$\left|(G/P)^{p = \id}\right| = |G/P| \mod p$, and this is equivalent to $0$ by assumption.
+
+			$N_G(P)/P$ is a group with order divisible by $p$, so by Cauchy, there exists $x \in N_G(P)/P$ with order $p$.
+			Consider $P' = \pi\pre\left(\langle x\rangle\right)$ where $\pi: N_G(P) \surjto N_G(P)/P$.
+		The preimage of a subgroup is a subgroup, and $|P'| = p \cdot |P|$, contradicting the maximality of $P$ in $\Sigma$, so we are done.   
+
+	\item Let $H \circlearrowright G/P$ by left multiplication.
+		By fixed point theorem, the number of fixed points is equal to $|G/P| \mod p \equiv m \mod p \neq 0$.
+		Hence, there is a fixed point, so there exists a $[g] = gP$ fixed by $H$, which implies that $g^{-1}hg \in P$ for all $h \in H$, so we are done.
+
+	\item Let $G \circlearrowright \Syl_p(G)$ by conjugation.
+		Let $P \in \Syl_p(G)$, then 
+		\[
+			\Stab_p = \left\{g \in G: gPg^{-1} = P\right\} = N_G(P)
+		\].
+		Hence, $[G: N_G(P)] = n_p = |\Syl_p(G)|$.
+		Note that this implies $m = [G: P] = [N_G(P) : P] \cdot n_p$, so $n_p \mid m$.
+
+		Let $P \circlearrowright \Syl_p(G)$ by conjugation.
+		What are the fixed points, $\left(\Syl_p(G)\right)^P$?
+		Let $G \in \Syl_p(G)$.
+		We claim that if $gQg^{-1} = Q$ for all $g \in P$, then $P = Q$
+
+		If this is the case, then $P \leq N_G(Q)$, implying that $PQ$ is a subgroup.
+		Hence, $|PQ| = \frac{|P||Q|}{|P \cap Q|}$, so $PQ$ is a $p$-group, since $P$ and $Q$ are both Sylow $p$-subgroups.
+		Since $P$ and $Q$ are both maximal $p$-subgroups, and $PQ$ is a $p$-subgroup that contains them both, $P$ must be equal to $Q$.
+
+		Hence, by fixed point theorem, we have that $|n_p| \equiv \abs{\left(\Syl_p(G)\right)^P} \mod p$.
+		However, since the only fixed point is $P$ itself, we have that $|n_p| \equiv 1 \mod p$. 
+\end{enumerate}
+\end{proof}
+
+\section{Class 3}
+\subsection{Applying Sylow's}
+\begin{corollary}
+The only groups of order $15$ are cyclic.
+\end{corollary}
+\begin{proof}
+Note that $n_3 \equiv 1 \mod 3$ and $n_3 \mid 5$, so $n_3 = 1$, and there exists $x \neq 1$ with $x^3 = 1$.
+ASylow $p$-subgroup is normal iff $|n_p| =1$ (invariant under conjugation).
+Similarly, there is a unique Sylow $5$-subgroup, and hence there exists $y \neq 1$ with $y^5 = 1$.
+Check that $H_3H_5$ is the whole group, so we are done. 
+\end{proof}
+
+\begin{corollary}
+There are no simple groups of order $30$. 
+\end{corollary}
+\begin{proof}
+Note that $n_3$ must be either $1$ or $10$.
+Similarly, $n_5$ must be either $1$ or $6$.
+Neither can be one, otherwise there would be a normal subgroup. 
+Hence, there must be $10$ subgroups of order $3$, and $6$ of order $5$.
+However, the $10$ subgroups of order $3$ must contribute $20$ distinct nonidentity elements.
+Similarly, the $6$ subgroups of order $5$ must contribute $24$ distinct nonidentity elements.
+There can be no overlap because of different orders, so there are too many elements in the group, a contradiction.
+\end{proof}
+
+\begin{corollary}
+What can we say if $|G| = 56$?
+\end{corollary}
+
+$n_7 = 1$ or $n_7 = 8$, and $n_2 = 1$ or $n_2 = 7$.
+
+If $n_7 = 1$, then $H_7 \triangleleft G$, so we can represent $G$ as a semidirect product in a finite number of ways.
+If $n_7 = 8$, then they take up $48$ distinct non-identity elements, so $n_2$ can't be $7$. 
+Hence, 
+\subsection{How to think about quotient groups}
+Let $G$ be a group and $N \triangleleft G$. 
+Let $\pi: G \to G/N$ be the projection, and let $f: G \to H$ be an arbitrary homomorphism.
+Then, $f$ factors in the below form
+\[
+\xymatrix{
+	G \ar[d]_{\pi}\ar[r]^{f} & H \\
+	G/N \ar[ur]^{\exists ! \pi} & \\
+}
+\] 
+if and only if $N \subset \ker(f)$ 
+
+We can use this, to characterise the quotient using a universal property.
+Let $G$ be a group, and $N \triangleleft G$. 
+Consider the below diagram.
+\[
+\xymatrix{
+	G\ar[d]_{\pi} \ar[r]^{f} & H \\
+	G' \ar[ur]_{\exists!h} & \\
+}
+\]
+Consider the statement that ``$\exists ! h$ that makes the diagram commute if and only if $N \subset \ker(f)$''.
+This statement is equivalent to the statement that $\pi: G \to G'$ is the quotient of $G$ by $N$.
+
+The direct product of groups, $\prod$, is the categorical product in $\catname{Grp}$
+
+The direct sum of groups, $\bigoplus$, is the categorical sum in $\catname{Grp}$ 
+
+\section{Class 4}
+Very standard way to prove modularity called patching, developed by Wiles. 
+Used to prove FLT.
+Work mod $p$, solve it, and lift.
+
+The abelianization functor
+\begin{align*}
+	\left(\dashbk\right)^{\textrm{ab}}: \catname{Grp} &\to \catname{Ab} \\
+	G &\mapsto G/[G, G] \\
+\end{align*}
+is left adjoint to the forgetful functor
+\[
+U: \catname{Ab} \injto \catname{Grp} 
+\]
+The abelianisation can be characterised by the following property:
+Let $\pi: G \mapsto G'$ for abelian $G$ such that every homomorphism $f: G\to H$ for $H$ abelian factors through $\pi$.
+Then, $\pi$ is the abelianization map.
+\[
+\xymatrix{
+G \ar[d]_{\pi} \ar[r]^{f} & H \\
+G' \ar[ur]_{\exists h!} & \\
+}
+\] 
+We will later see that this follows from the previously described adjunction.
+
+\section{Class 5}
+\subsection{Free functors}
+For $k$ a vector space, $S$ a set, we declare the \vocab{free vector space generated by } $S$ to be the vector space $V_k(S)$ of all $k$-linear combinations of $S$.
+
+Then, $\Hom_{\catname{Vect}_k}(V_k(S), W) = \Hom_{\catname{Set}(S, W)}$.
+Thus, there is a canonical bijection between $\Hom_{\catname{Vect}_k }(F(A), B)$ and $\Hom_{\catname{Set} }(A, G(B))$, where $F: \catname{Set} \to \catname{Vect}_k$ is the free vector space functor, and $G: \catname{Vect}_k \to \catname{Set} $ is the forgetful functor.
+(As we will see later, this is the definition of an adjunct pair)
+
+Similarly, for a set $S$, we have the \vocab{free group functor}, that sends a set $S$ to the free group on $S$, which is the set of all finite words with letters in $S$. 
+
+\subsection{Tensor product}
+
+Similarly, we can construct a tensor product of vector spaces such that $k$-bilinear maps on a product space are in canonical bijection with $k$-linear maps on their tensor product.
+
+\subsection{Defining a category}
+basic axioms, etc etc etc.
+
+Definition of small, locally small category.
+
+Groups are a locally small category with one element and all morphisms invertible.
+
+Notion of a functor
+
+\section{Class 6}
+What is a subcategory? 
+
+From now onwards, all categories are assumed to be locally small.
+Thus, we have the $\Hom$ functor.
+
+A specific example is $\Hom_{\mathscr{C}}(A, \dashbk)$, the (covariant) left $\Hom$ functor. 
+If we set $\mathscr{C} = \catname{Grp}$ and $A = \mathbb{Z}$  we have that $\Hom_{\catname{Grp} }(\mathbb{Z}, \dashbk)$ is simply the forgetful functor $U: \catname{Grp} \to \catname{Set} $.  
+
+defined subcategories, opposite categories, notions of faithful and full for functors, and weakly nitial, terminal, initial and terminal objects, natural transformations, natural isomorphism.
+
+A functor $\mathcal{F}: \mathscr{C} \to \catname{Set} $ is \vocab{representable} by an object $A \in \ob(\mathscr{C})$ iff there exists a natural isomorphism 
+\[
+	\xymatrix{
+	\mathscr{C} \rtwocell^{\Hom_{\mathscr{C}}(A, \dashbk)}_{\mathcal{F}} &  \catname{Set} \\ 
+	}
+\] 
+The correct notion for categories being the same is equivalence, not isomorphism.
+
+\newpage 
+
+\section{PSet 1}
+\begin{soln}[Exercise 3]
+The order of every element must divide $p^2$.
+The only element with order $1$ is the identity.
+If there exists an element, $g$, with order $p^2$, then $G \cong \cyc{p^2}$.
+
+Now, we tackle the remaining case, which is that every non identity element has order $p$.
+By the class equation, we have $|G| = |Z(G)| + \sum_{i=1}^r |G : C_G(x_i)|$, where the $x_i$s run over representatives of nontrivial conjugacy classes.
+Hence, the index of $|G: C_G(x_i)| > 1$.
+Note that $C_G(x_i)$ is never the trivial group since it always contains $1$ and $x_i$ – and if they are not distinct, i.e. $x_i = 1$, then $C_G(x_i) = G$.
+Hence, $|G : C_G(x_i)|$ is not $p^2$, and hence it is equal to $p$. 
+By working $\mod p$, we see that $|Z(G)| \equiv 0 \mod p$, so it is nontrivial.
+
+Choose a nontrival $x \in Z(G)$, which has order $p$ by our hypothesis.
+Note that $G/Z(G)$ has order $p$, so we can pick a generator $\ol{y} \in G/Z(G)$.
+Hence, every element in $G$ is of the form $y^ax^b$.
+However, since $x \in Z(G)$, we have that $y^a x^b = x^by^a$.
+Thus, since the generators of $G$ commute, $G$ is abelian, and by classification of finite abelian groups it is of the form $\cyc{p}\times \cyc{p}$, so we are done.
+\end{soln}
+
+\begin{soln}[Exercise 5]
+Assume for contradiction there exists a simple group $G$ of order $56$.
+
+$n_2 \mid 7$ and $n_2 \equiv 1 \mod 2$, so $n_2$ is either $1$ or $7$.
+Similarly, $n_7 \mid 8$ and $n_7 \equiv 1 \mod 7$, so $n_7$ is either $1$ or $8$.
+
+If $n_p = 1$ for any $p$, then the corresponding Sylow $p$-group is normal, since if there exists a $g$ such that $gPg^{-1}$ is not equal to $P$, that means there are multiple Sylow $p$-groups.
+Hence, $n_7 = 8$ and $n_3 = 7$.
+Note that the pairwise intersection of any two distinct Sylow $7$-groups must be trivial, since their intersection must be a subgroup of the two Sylow groups, and hence either trivial or the whole group, and their intersection is the whole group iff they are the same.
+Hence, each member of $\Syl_7(G)$ corresponds to $6$ distinct nonidentity elements, and each member of $\Syl_3(G)$ corresponds to $2$ distinct nonidentity elements.
+
+Hence, this counting gives $8 \times 6 + 7 \times 2 + 1 = 63$ distinct elements, which contradicts that the order of the group is $54$, so we are done.
+\end{soln}
+
+\begin{soln}[Exercise 6]
+We have that $|S_4| = 24 = 3 * 8$.
+By Sylow's theorem, we have that $n_3 \mid 8$ and $n_3 \equiv 1 \mod 3$, and hence $n_3$ is equalto either $1$ or $4$.
+By considering the distinct Sylow $3$-subgroups $\langle(1 \, 2 \, 3)\rangle$ and $\langle \left(2 \, 3 \, 4\right)\rangle$, we note that $n_3 >1$, so $n_3 = 4$. 
+
+Let $\sigma = (1 \, 2 \, 3)$, and let $H = \langle \sigma\rangle$.
+Clearly, $\tau H \tau^{-1} = H$ only if the group $\tau H \tau^{-1}$ fixes $4$ identically.
+However, we can strengthen this to an iff, since $H$ is the only subgroup of order $3$ that does not fix $4$ identically.
+Hence, if $\tau H \tau^{-1}$ does not fix $4$ identically, we have that $\tau H \tau^{-1}$ must be equal to $H$.
+
+One can easily verify that for any permutation $\tau$ that does not fix $4$, $\tau h \tau^{-1}$ does not fix $4$ for any $h \in H$.
+Hence, $\tau H \tau^{-1}$ is not equal to $H$ 
+Conversely any $\tau$ that fixes $4$ leaves $H$ invariant under conjugation, since it is the only subgroup of order $3$ that fixes $4$ identically.
+
+Thus, the set of all $\tau$ that normalise $H$, or $N_{S_4}(H)$ is simply $S_3$ viewed as a subgroup of $S_4$ in the obvious manner.
+The normaliser index matches our count, providing a brief sanity check that for $G \circlearrowright G/H$ by conjugation, we have that $|G : N_{S_4}(H)| = |G: \Stab_H| = \Orb_{H}$. 
+\end{soln}
+
+\begin{soln}[Exercise 9]
+	(proof strategy does not follow outline)
+
+	We know that $n_7 \mid 3$ and $n_7 \equiv 1 \mod 7$, so $n_7 = 1$.
+	Similarly, we know that $n_3 \mid 7$ and $n_3 \equiv 1 \mod 3$, so $n_3$ must be $1$ or $7$.    
+	To show that $n_3 > 1$, consider the distinct Sylow $3$-subgroups $\langle2x\rangle$ and $\langle5\rangle$.
+	Thus, $n_3 = 7$, $n_7 = 1$.
+
+	We recall from 111A that for a group $G$ of order $pq$ with $p$, $q$ (not necessarily distinct) primes, we have that $Z(G) = \left\{1\right\}$, or $Z(G) = G$ (proof sketch: if $Z(G)$ has order at least $p$ or $q$, then $G/Z(G)$ is cyclic, hence $G$ is abelian).  
+
+	Since $G$ is clearly not abelian ($a(x)$ and $b(x)$ do not commute), we have that $G$ has trivial center, so we are done. 
+\end{soln}
+
+
+\begin{soln}[Exercise 10]
+Let $G$ be a group that satisfies the described hypotheses.
+
+Note that $n_p \mid q$, so $n_p = 1$ or $n_p = q$.
+Since $n_p \equiv 1 \mod p$, we have that $n_p = 1$, since $q \not \equiv 1 \mod p$.
+Similarly, $n_q \mid p$, so $n_q = 1$ or $n_q = p$.
+Since $n_p \equiv 1 \mod p$, we have that $n_p = 1$, since $1 < p < q$, so $p \not \equiv 1 \mod q$.
+
+Thus, $G$ has a unique Sylow $p$-subgroup and a unique Sylow $q$-subgroup.
+Let these be denoted by $G_p$, $G_q$ respectively.
+Let $a$ be a generator of $G_p$, and $b$ be a generator of $G_q$.  
+We now claim that $G = G_p \times G_q$, and that $ab$ is a generator of $G$.
+To show this, we only must show that $a$ and $b$ commute, or equivalently, that $aba^{-1} = b$.  
+
+Let $\phi_a \in \Aut(G)$ be the `conjugation by $a$' map.
+Since $G_q$ is the unique Sylow $q$-subgroup, it is invariant under conjugation.
+Hence, since $G_q$ is cyclic, we have that $aba^{-1} = \phi_a(b) = b^k$ for some $0< k < q$.
+Note that if $k=1$, we are done.
+
+Then, 
+\begin{align*}
+	\phi_a(b) &= b^k \\
+	\Rightarrow b &= \phi^p_a(b)= b^{k^p} \\
+	\Rightarrow k^p &\equiv 1 \mod q \\
+	\Rightarrow \mathrm{Ord}(k)_{\mathbb{Z}/q \mathbb{Z}^{\times}} &\mid p \\
+	\Rightarrow \mathrm{Ord}(k)_{\mathbb{Z}/q \mathbb{Z}^{\times}} = 1 \textrm{ or } &|k|_{\mathbb{Z}/p \mathbb{Z}^{\times}} = p \\
+\end{align*}
+If $|k|_{\mathbb{Z}/p \mathbb{Z}^{\times}} = p$, then $p \mid q-1$, which we know is untrue.
+Hence, $|k|_{\mathbb{Z}/p \mathbb{Z}^{\times}} = 1$, so $k \equiv 1 \mod q$ and hence $k=1$, so we are done.
+\end{soln}
+
+\begin{soln}[Exercise 11]
+	Note that for $a = sr$, $b = s$, we have that $[a, b] = (sr)(s)(r^{-1}s)(s) = r^{-2}$.
+	Hence, we have that the commutator imposes the additional restriction that $r^2 = 0$. 
+We compute all the possible commutators.
+\begin{itemize}
+	\item If $a = r^i$, $b = r^j$, then $[a, b] = 1$.
+	\item If $a = sr^i$, $b = sr^j$, then 
+		\begin{align*}
+		[a, b] &= (sr^i)(sr^j)(r^{-i}s)(r^{-j}s) \\
+		       &= (r^{-i}s)(sr^j)(r^{-i}s)(sr^j) \\
+		       &= r^{2i-2j}
+	\end{align*}  
+\item If $a = sr^i$, $b = r^j$, then   
+	\begin{align*}
+		[a, b] &= (sr^i)(r^j)(r^{-i}s)(r^{-j}) \\
+		       &= (sr^j)(s)(r^{-j}) \\
+		       &= r^{-2j}
+	\end{align*}  
+	Note that the last case is equivalent to the not shown case where $a = r^i$, $b = sr^j$ by the representation $b = r^{-j}s$ instead.
+\end{itemize}
+At this point, we notice that the additional relations imposed by quotienting are equivalent to setting $r^2 = 1$.
+If $n$ is even, that gives us $D_{n}/[D_{n}, D_{n}] \cong K_4$, the Klein four group.
+If $n$ is odd, this in fact implies that $r = 1$, so we have that $D_n/[D_n, D_n] \cong \cyc{2}$. 
+\end{soln}
+
+
+\begin{soln}[Exercise 12]
+We claim that the free product is the coproduct in $\catname{Grp}$, and that the inclusion maps are given by 
+\begin{align*}
+\iota_1: G &\injto G * H \\
+g &\mapsto x_g \\
+\end{align*}
+and
+\begin{align*}
+\iota_2: H &\injto G * H \\
+h &\mapsto y_h \\
+\end{align*}
+It is clear that $\iota_1$, $\iota_2$ are homomorphisms.
+Moreover, there are no relations that result in $x_{g} = x_{g'}$ for $g \neq g'$ (respectively for $\iota_2$), so we have injectivity as well.  
+
+Let $\phi_1: G \to K$ and $\phi_2: H \to K$ be arbitrary morphisms.
+Now, consider the map $\psi: G * H \to K$ such that $\psi(x_{g}) = \phi_1(g)$ and $\psi(y_h) = \phi_2(h)$.
+The only relations are that $x_{g}x_{g'}=x_{gg'}$ and $y_{h}y_{h'}=y_{hh'}$, and we can observe that $\psi$ is compatible with these relations.
+Hence, $\psi$ is a well defined homomorphism, and it is clear that $\psi \circ \iota_1 = \phi_1$, $\psi \circ \iota_2 = \phi_2$, so we have existence.
+
+Conversely, to prove uniqueness, note that $\psi' \circ \iota_1 = \phi_1$ and $\psi' \circ \iota_2 = \phi_2$ only if $\psi'(x_{g}) = \phi_1(g)$ and $\psi'(y_h) = \phi_2(h)$. 
+From this, the homomorphism extends uniquely to all of $G * H$, so $\psi' = \psi$. 
+
+\[
+\xymatrix{
+ & K & \\
+ G \ar[ur]^{\phi_1}\ar[r]_{\iota_1} & G * H \ar@{.>}[u]_{\psi} & H \ar[ul]_{\phi_2}\ar[l]^{\iota_2} \\
+ }
+\] 
+\end{soln}
+
+\end{document}
