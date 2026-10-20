@@ -708,9 +708,36 @@ Let $\mathscr{A} \xrightarrow{\mathcal{F}} \mathscr{B} \xrightarrow{\mathcal{B}}
 Assume that $\mathcal{F}$ takes injective objects to $\mathcal{G}$-acylic objects (i.e. $R^q \mathcal{G}(F(I)) = 0 $ for all $q>0$.
 
 \begin{proposition}
-There exist natural maps $\delta: R^iGF(A) \to R^iG(F(A))$ for all $A \in \mathscr{A}$ and $i \geq 0$.
+There exist natural maps $\delta: R^pG(F(A)) \to R^pGF(A)$ for all $A \in \mathscr{A}$ and $i \geq 0$.
 \end{proposition}
+\begin{proof}
+	Let $A \to I^{\bullet}$ be an injective resolution.
+	Consider the diagram
+	\[
+	\xymatrix{
+	F(A) \ar[r] \ar[d] & F(I) \ar[d] \\
+	J \ar[r] & J' \\
+	}
+	\]
+	Then, we get maps of complexes
+	\[
+	\xymatrix{
+	& GF(I^{^\bullet}) \ar[d] \\
+		G(J) \ar[r] & G(J') = H^p(G(J'))
+	}
+	\]
+	We have that $R^pG(F(A)) = H^p(G(J))$ 
+	We claim that $GF(I^{\bullet}) \to G(J')$ is a quasi-isomorphism.
+	Thus, $\delta^p: R^pG(F(A)) \to R^q GF(A)$. 
 
+	To prove that claim.
+	In general, suppose $H: \mathscr{A}' \to \mathscr{B}'$.
+	Let $E^{\bullet}$ be a complex of $H$-acyclic objects in $\mathscr{A}'$.
+	Let $E^{\bullet}\to J^{\bullet}$ be an injective resolution.
+	Then, $H(E) \to H(J)$ is a quasi-isomorphism.
+
+	A sketch of this proof, is that there exists a spectral sequence $E_2^{p, q} = H^p \left(R^qH(E^0) \to R^qH(E^1) \to \dots\right)$.
+\end{proof}
 \end{document}
 
 
