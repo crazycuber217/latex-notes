@@ -622,11 +622,25 @@ Then, there exists a map
 }
 \]
 
+\begin{proposition}
+	$\text{\Cores}_R^S \circ \text{Res}_R^S : \Ext_S^i(P, M) \to \Ext_S^i(P, M)$ is multiplication by $n$ (rank of $S$ over $R$).
+\end{proposition}
+
+\begin{proof}
+First, we consider the case for $i=0$
+In this case, we have the diagram
 \[
 \xymatrix{
-\ar@<0.5ex>[] \ar@<-0.5ex>[]
+	\Hom_S(P, M) \injto^{\Res_R^S} & \Hom_R(P, M) \ar[r]^{\cong} & \Hom_S(P \otimes_R S, M) \ar[d]^{\cong} \\
+				      \Hom_S(P, M) & \bigoplus_{i=1}^n \Hom_S(P, M) \ar[l]^{\text{Cores}_R^S}_{\triangle^{*}} & \Hom_S(P^n, M) \ar[l]^{\cong}
 }
 \]
+
+such that the composition is the map $\sum_{I=1}^n f = nf$.
+
+This gives a natural transformation $\eta$ 
+\end{proof}
+
 \end{document}
 
 
