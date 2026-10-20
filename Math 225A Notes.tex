@@ -638,9 +638,38 @@ In this case, we have the diagram
 
 such that the composition is the map $\sum_{I=1}^n f = nf$.
 
-This gives a natural transformation $\eta$ 
+This gives a natural transformation $\eta: \Hom_S(P, \dashbk) \to \Hom_S(P, \dasbk)$ on $S-\catname{mod}$
+such that $\eta(M)$ is multiplication by $n$ on $M$, so $\eta = n \cdot \id$
+Thus, $n: \Ext_S^i(P, \dashbk) \to \Ext_S^i(P, \dashbk)$ is also equal to $n \cdot \id$ for all $i\geq 0$.   
 \end{proof}
 
+\begin{corollary}
+	Let $G$ be a discrete group and $H \injto G$ a subgroup of finite index $n$.
+	Let $A \in G-\catname{mod}$.
+	Then, the composition $H^i(G, A) \xrightarrow{\text{Res}_H^G} H^i(H, A) \xrightarrow{\text{Cores}_H^G} H^i(G, A)$  
+	is multiplication by $n = [G : H]$.
+\end{corollary}
+\begin{proof}
+	Take $R = \mathbb{Z}[H]$ and $S = \mathbb{Z}[G]$, $P = \mathbb{Z}$, $M = A$.
+\end{proof}
+\begin{corollary}
+	Suppose $G$ is a finite group of order $n$ and $A$ is a $G$-module.
+	Then, $H^i(G, A)$ is annihilated by $n$ for all $i>0$. 
+\end{corollary}
+\begin{proof}
+	Apply the previous corollary with $H = \left\{e\right\}$.
+	Then, we get maps $H^i(G, A) \xrightarrow{\text{Res}} \to H^i(\left\{e\right\}, A) \xrightarrow{\text{Cores}} H^i(G, A)$  such that the composition is multiplication by $n$.
+	Thus, $nH^i(G, A) = 0$ for all $i>0$.
+\end{proof}
+Let $G$ be a discrete group, $H$ a normal subgroup of finite index.
+Let $A \in G-\catname{mod}$.
+Then, we have maps
+\[
+\xymatrix{
+	H^i(G, A) \ar[r]^{\text{Res}_H^G} \ar[dr]& H^i(H, A) \ar[d]^{\text{Cores}_H^G} \\
+	H^i(G/H, A^H) \ar[u]^{\text{Inf}_H^G} \ar@{-->}[ur] & H^i(G, A) \\
+}
+\]
 \end{document}
 
 
