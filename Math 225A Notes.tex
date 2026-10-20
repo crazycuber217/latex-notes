@@ -610,7 +610,7 @@ An application: Let $\phi: G' \to G$ be a group homomorphism and $A \in G-\catna
 Let $B$ be a $G'$ module and let $h: A \to B$ be a $G'$ equivariant map.
 Then, there exists a canonical group homomorphism $h_{*}$ 
 
-\subsection{Class 8}
+\section{Class 8}
 
 Last time our set up with: $\alpha: R \to S$ such that $S$ is a free $R$-module of finite rank $n$.
 Let $M, P$ be $S$-modules.
@@ -683,9 +683,11 @@ When $i =0$, we have the below diagram.
 	Let $H \injto G$ be a normal subgroup, let $A \in G-\catname{mod}$.
 	Then, the composition 
 	\[
-		H^i \left(G/H, A^H\right) \ar[r]^{\text{Inf}_H^G} & H^i(G, A) \ar[d]^{\text{Res}_H^G} \\
-								  & H^i(H, A) \\
-	\] 
+		\xymatrix{
+	H^i \left(G/H, A^H\right) \ar[r]^{\text{Inf}_H^G} & H^i(G, A) \ar[d]^{\text{Res}_H^G} \\
+						  & H^i(H, A) \\
+					  }
+	\]
 	is zero for all $i>0$. 
 \end{proposition}
 \begin{proof}
@@ -699,6 +701,15 @@ Consider the ring homomorphisms
 
 (he erased before i could copy the rest of the proof)
 \end{proof}
+
+\subsection{Grothendieck spectral sequence}
+
+Let $\mathscr{A} \xrightarrow{\mathcal{F}} \mathscr{B} \xrightarrow{\mathcal{B}} \mathscr{C}$ be abelian categories with enough injectives and $\mathcal{F}$ and $\mathcal{G}$ be left exact functors.
+Assume that $\mathcal{F}$ takes injective objects to $\mathcal{G}$-acylic objects (i.e. $R^q \mathcal{G}(F(I)) = 0 $ for all $q>0$.
+
+\begin{proposition}
+There exist natural maps
+\end{proposition}
 
 \end{document}
 
